@@ -42,30 +42,24 @@ def write_file(path, data):
 
 
 def get_panel(panel):
-    panel_ziyan = ['小', '26', '26基因', '26gene', '26.0', '结直肠癌12基因']
-    panel_jiezhichangai = ['结直肠癌14个驱动基因', '结直肠癌14驱动基因',
-                           '结直肠癌NCCN指南', '结直肠癌NCCN指南必选检测',
-                           '结直肠癌14个驱动基因检测']
-    panel_62gene = ['中']
     panel_4gene = ['4基因', '4gene']
-    panel_ckit = ['ckit', 'c-kit', 'C-KIT', 'CKIT', 'C-KIT析', 'CIKT']
-    panel_rna = ['超级全外RNA融合']
-    panel_ignore = ['肿瘤易感', '城市易感', '软组织肉瘤基因检测',
-                    'TMB', 'BRCA1/2', '遗传', '淋巴瘤48基因']
+    panel_ignore = ['易感', '儿童', '肉瘤',
+                    'TMB', 'BRCA', '遗传', '淋巴',
+                    '前列腺']
 
-    if panel in panel_ziyan:
+    if panel.__contains__('26') or panel == '小' or panel.__contains__('12'):
         return 'ziyan'
-    elif panel in panel_jiezhichangai:
+    elif panel.__contains__('14') or panel.__contains__('NCCN'):
         return 'jiezhichangai'
-    elif panel in panel_62gene:
+    elif panel == '中':
         return '62gene'
     elif panel in panel_4gene:
         return '4gene'
-    elif panel in panel_ckit:
+    elif sum([panel.upper().__contains__(i) for i in ['C','I','K','T']]) == 4:
         return 'ckit'
-    elif panel in panel_rna:
+    elif panel.__contains__('RNA'):
         return ''
-    elif panel in panel_ignore:
+    elif sum([panel.__contains__(i) for i in panel_ignore]):
         return 'ignore'
     else:
         return 'unknown'
@@ -83,5 +77,9 @@ if __name__ == '__main__':
             i['DNA标签'] = int(i['DNA标签'] )
         if isinstance(i['RNA标签'], float):
             i['RNA标签'] = int(i['RNA标签'] )
+        if isinstance(i['DNA标签'], str):
+        	i['DNA标签'] = '/'
+        if isinstance(i['RNA标签'], str):
+            i['RNA标签'] = '/'
         output_txt.append([int(i['序号']), str(i['检测编号']).upper(), i['DNA标签'], i['RNA标签'], get_panel(str(i['检测项目']))])
     write_file(options.output, output_txt)
